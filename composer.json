@@ -4,7 +4,7 @@
     "description": "工具类库",
     "keywords": ["hwphp","tools", "curl"],
     "homepage": "https://github.com/github-hewei/Hwphp",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
