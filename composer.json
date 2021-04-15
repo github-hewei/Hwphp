@@ -1,0 +1,23 @@
+{
+    "name": "hwphp/hwphp",
+    "type": "library",
+    "description": "工具类库",
+    "keywords": ["hwphp","tools", "curl"],
+    "homepage": "https://github.com/github-hewei/Hwphp",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hewei",
+            "email": "hemailads@163.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hwphp\\": "src/"
+        }
+    }
+}
