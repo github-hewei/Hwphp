@@ -4,11 +4,13 @@
     "description": "工具类库",
     "keywords": ["hwphp","tools", "curl"],
     "homepage": "https://github.com/github-hewei/Hwphp",
+    "minimum-stability": "stable",
     "license": "MIT",
     "authors": [
         {
             "name": "hewei",
             "email": "hemailads@163.com",
+            "homepage": "https://github.com/github-hewei/Hwphp",
             "role": "Developer"
         }
     ],
