@@ -1,10 +1,58 @@
 # Hwphp
+
+## 安装方法
 > 安装方法
 ```sh
 composer require hwphp/hwphp
 ```
 
+## Tree
+> Tree 用法示例
+
+```php
+<?php // CODE BY HW 
+    $rows = [
+    	[
+            'id' => 1,
+            'name' => 'aa',
+         	'pid' => 0,
+        ],
+    	[
+            'id' => 2,
+            'name' => 'bb',
+            'pid' => 1,
+        ],
+    	[
+            'id' => 3,
+            'name' => 'cc',
+            'pid' => 2,
+        ],
+    	[
+            'id' => 4,
+            'name' => 'dd',
+            'pid' => 0,
+        ]
+	];
+
+    $tree = Tree::get($rows, ['appendLevel' => true, 'appendIdx' => true], function($item) {
+       	if ($item['_idx'] == 0) { // 当前数组第一个元素
+            
+        }
+        if ($item['_idx'] == $item['_idxMax']) {// 当前数组最后一个元素
+            
+        }
+        // $item['_level']; // 当前元素级别
+        
+        $item['region_name'] = $item['name'] .'.updated';
+        
+        // 最后必须将修改后的元素返回
+        return $item;
+    });
+```
+
+## Curl
 > Curl用法示例一
+
 ```php
 <?php //CODE BY HW
 require_once 'vendor/autoload.php';
