@@ -5,6 +5,17 @@
 ```sh
 composer require hwphp/hwphp
 ```
+## SnowflakeId
+> 生成雪花Id示例
+```php
+<?php
+$workerId = 1;
+$instance = new Hwphp\SnowflakeId($workerId);
+for ($i = 0; $i < 100; $i++) {
+    echo $instance->generate() . "\n";
+}
+
+```
 
 ## Tree
 > Tree 用法示例

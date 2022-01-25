@@ -1,10 +1,10 @@
 <?php //CODE BY HW
-namespace Hwphp\curl;
+namespace Hwphp\exception;
 
 /**
  * cURL异常处理类
  */
-class Exception extends \Exception {
+class CurlException extends \Exception {
 
     /**
      * cURL错误编号

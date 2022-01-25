@@ -1,6 +1,6 @@
 <?php //CODE BY HW
 namespace Hwphp;
-use Hwphp\curl\Exception;
+use Hwphp\exception\CurlException;
 
 /**
  * cURL封装
@@ -233,14 +233,14 @@ class Curl {
      * @param string $file 文件路径
      * @param string $name 文件名称
      * @return $this
-     * @throws Exception
+     * @throws CurlException
      */
     public function setFile($file, $name = 'file') {
         if(!class_exists('CURLFile')) {
-            throw new Exception('CURLFile class does not exist');
+            throw new CurlException('CURLFile class does not exist');
         }
         if(!file_exists($file)) {
-            throw new Exception('file does not exists. ' . $file);
+            throw new CurlException('file does not exists. ' . $file);
         }
         $this->files[$name] = $file;
         return $this;
@@ -250,7 +250,7 @@ class Curl {
      * 批量设置发送文件
      * @param array $files 文件列表
      * @return $this
-     * @throws Exception
+     * @throws CurlException
      */
     public function setFiles($files) {
         foreach($files as $key => $value) {
@@ -311,13 +311,13 @@ class Curl {
     /**
      * 发送cURL请求
      * @return mixed
-     * @throws Exception
+     * @throws CurlException
      */
     public function exec() {
         if(is_array($this->files) && $this->files) {
             $this->post = true;
             if(!is_array($this->data)) {
-                throw new Exception('The data property can only be an array');
+                throw new CurlException('The data property can only be an array');
             }
             foreach($this->files as $name => $file) {
                 $mime = null;
@@ -346,17 +346,17 @@ class Curl {
         $this->setOption(CURLOPT_URL, $url);
         $curl = curl_init();
         if(false == curl_setopt_array($curl, $this->options)) {
-            throw new Exception('Options contain wrong options');
+            throw new CurlException('Options contain wrong options');
         }
         $this->response = curl_exec($curl);
         if(curl_errno($curl) !== CURLE_OK) {
-            throw new Exception(curl_error($curl), curl_errno($curl), 500);
+            throw new CurlException(curl_error($curl), curl_errno($curl), 500);
         }
         $this->info = curl_getinfo($curl);
         if($this->jsonToArray) {
             $result = json_decode($this->response, true);
             if(json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('json_decode error' . (function_exists('json_last_error_msg') ? ': ' . json_last_error_msg() : ''), 0, 501);
+                throw new CurlException('json_decode error' . (function_exists('json_last_error_msg') ? ': ' . json_last_error_msg() : ''), 0, 501);
             }
             $this->response = $result;
         }
