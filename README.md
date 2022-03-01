@@ -9,10 +9,22 @@ composer require hwphp/hwphp
 > 生成雪花Id示例
 ```php
 <?php
-$workerId = 1;
-$instance = new Hwphp\SnowflakeId($workerId);
-for ($i = 0; $i < 100; $i++) {
-    echo $instance->generate() . "\n";
+require_once 'vendor/autoload.php';
+
+use Hwphp\Snowflake;
+use Hwphp\exception\SnowflakeException;
+try {
+    $snowflake = new Snowflake(1, 1);
+    $snowflake->setStartTimestamp(strtotime('2022-01-01 00:00:00') * 1000);
+
+    for ($i = 0; $i < 10; $i++) {
+        $id = $snowflake->id();
+        $parse = $snowflake->parseId($id);
+        var_dump($id, $parse, date('Y-m-d H:i:s', ceil($parse['timestamp'] / 1000)));
+    }
+
+} catch(SnowflakeException $e) {
+    echo $e;
 }
 
 ```
@@ -22,43 +34,46 @@ for ($i = 0; $i < 100; $i++) {
 
 ```php
 <?php // CODE BY HW 
-    $rows = [
-    	[
-            'id' => 1,
-            'name' => 'aa',
-         	'pid' => 0,
-        ],
-    	[
-            'id' => 2,
-            'name' => 'bb',
-            'pid' => 1,
-        ],
-    	[
-            'id' => 3,
-            'name' => 'cc',
-            'pid' => 2,
-        ],
-    	[
-            'id' => 4,
-            'name' => 'dd',
-            'pid' => 0,
-        ]
-	];
+require_once 'vendor/autoload.php';
 
-    $tree = Tree::get($rows, ['appendLevel' => true, 'appendIdx' => true], function($item) {
-       	if ($item['_idx'] == 0) { // 当前数组第一个元素
-            
-        }
-        if ($item['_idx'] == $item['_idxMax']) {// 当前数组最后一个元素
-            
-        }
-        // $item['_level']; // 当前元素级别
+use Hwphp\Tree;
+$rows = [
+    [
+        'id' => 1,
+        'name' => 'aa',
+        'pid' => 0,
+    ],
+    [
+        'id' => 2,
+        'name' => 'bb',
+        'pid' => 1,
+    ],
+    [
+        'id' => 3,
+        'name' => 'cc',
+        'pid' => 2,
+    ],
+    [
+        'id' => 4,
+        'name' => 'dd',
+        'pid' => 0,
+    ]
+];
+
+$tree = Tree::get($rows, ['appendLevel' => true, 'appendIdx' => true], function($item) {
+    if ($item['_idx'] == 0) { // 当前数组第一个元素
         
-        $item['region_name'] = $item['name'] .'.updated';
+    }
+    if ($item['_idx'] == $item['_idxMax']) {// 当前数组最后一个元素
         
-        // 最后必须将修改后的元素返回
-        return $item;
-    });
+    }
+    // $item['_level']; // 当前元素级别
+    
+    $item['region_name'] = $item['name'] .'.updated';
+    
+    // 最后必须将修改后的元素返回
+    return $item;
+});
 ```
 
 ## Curl
@@ -69,7 +84,7 @@ for ($i = 0; $i < 100; $i++) {
 require_once 'vendor/autoload.php';
 
 use Hwphp\Curl;
-use Hwphp\curl\Exception as CurlException;
+use Hwphp\exception\CurlException;
 
 try{
     $curl = new Curl('http://www.qq.com', 'GET', ['query' => 'value'], [
@@ -101,7 +116,7 @@ try{
 require_once 'vendor/autoload.php';
 
 use Hwphp\Curl;
-use Hwphp\curl\Exception as CurlException;
+use Hwphp\exception\CurlException;
 
 try{
     $curl = new Curl();

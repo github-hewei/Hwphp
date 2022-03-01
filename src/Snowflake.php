@@ -113,13 +113,25 @@ class Snowflake
             $this->sequenceNo = 0;
         }
 
+        $maxTimestamp = -1 ^ (-1 << self::TIMESTAMP_LENGTH);
+
+        $timestampDiff = $timestamp - $this->startTimestamp;
+
+        if ($timestampDiff < 0) {
+            throw new SnowflakeException('The start time cannot be greater than the current time');
+        }
+
+        if ($timestampDiff > $maxTimestamp) {
+            throw new SnowflakeException('The current microtime - starttime is not allowed to exceed -1 ^ (-1 << %d), You can reset the start time to fix this', self::TIMESTAMP_LENGTH);
+        }
+
         $this->lastTimestamp = $timestamp;
 
         $workerIdShift = self::SEQUENCE_LENGTH;
         $datacenterShift = self::WORKER_LENGTH + $workerIdShift;
         $timestampShift = self::DATACENTER_LENGTH + $datacenterShift;
 
-        return (string)((($timestamp - $this->startTimestamp) << $timestampShift)
+        return (string)(($timestampDiff << $timestampShift)
             | ($this->datacenter << $datacenterShift)
             | ($this->workerId << $workerIdShift)
             | ($this->sequenceNo));
@@ -135,10 +147,10 @@ class Snowflake
         $id = decbin($id);
 
         return [
-            'timestamp'  => bindec(substr($id, 0, -22)) + $this->startTimestamp,
-            'datacenter' => bindec(substr($id, -22, 5)),
-            'worker'     => bindec(substr($id, -17, 5)),
-            'sequence'   => bindec(substr($id, -12)),
+            'timestamp'  => bindec(substr($id, 0, -1 * (self::SEQUENCE_LENGTH + self::WORKER_LENGTH + self::DATACENTER_LENGTH))) + $this->startTimestamp,
+            'datacenter' => bindec(substr($id, -1 * (self::SEQUENCE_LENGTH + self::WORKER_LENGTH + self::DATACENTER_LENGTH), self::DATACENTER_LENGTH)),
+            'worker'     => bindec(substr($id, -1 * (self::SEQUENCE_LENGTH + self::WORKER_LENGTH), self::WORKER_LENGTH)),
+            'sequence'   => bindec(substr($id, -1 * self::SEQUENCE_LENGTH)),
         ];
     }
 
