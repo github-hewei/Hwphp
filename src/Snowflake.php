@@ -122,7 +122,7 @@ class Snowflake
         }
 
         if ($timestampDiff > $maxTimestamp) {
-            throw new SnowflakeException('The current microtime - starttime is not allowed to exceed -1 ^ (-1 << %d), You can reset the start time to fix this', self::TIMESTAMP_LENGTH);
+            throw new SnowflakeException(sprintf('The current microtime - starttime is not allowed to exceed -1 ^ (-1 << %d), You can reset the start time to fix this', self::TIMESTAMP_LENGTH));
         }
 
         $this->lastTimestamp = $timestamp;
