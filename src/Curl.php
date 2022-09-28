@@ -316,9 +316,12 @@ class Curl {
     public function exec() {
         if(is_array($this->files) && $this->files) {
             $this->post = true;
-            if(!is_array($this->data)) {
+            if (is_null($this->data)) {
+                $this->data = [];
+            } elseif(!is_array($this->data)) {
                 throw new CurlException('The data property can only be an array');
             }
+
             foreach($this->files as $name => $file) {
                 $mime = null;
                 if(class_exists('finfo')) {
