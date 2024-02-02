@@ -5,7 +5,60 @@
 ```sh
 composer require hwphp/hwphp
 ```
-## SnowflakeId
+
+## SnowflakeRedis
+> 生成雪花Id示例-Redis版
+
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+use Hwphp\SnowflakeRedis;
+use Hwphp\exception\SnowflakeException;
+
+$redis = new \Redis();
+$redis->connect('127.0.0.1', 6379);
+$redis->auth('123456');
+$redis->select(15);
+
+try {
+    $ids = [];
+    $snowflake = new SnowflakeRedis($redis);
+    $ids[] = $snowflake->id();
+
+    $snowflake = new SnowflakeRedis($redis);
+    $ids[] = $snowflake->id();
+
+    $snowflake = new SnowflakeRedis($redis);
+    $ids[] = $snowflake->id();
+
+    $snowflake = new SnowflakeRedis($redis);
+    $ids[] = $snowflake->id();
+
+    $snowflake = new SnowflakeRedis($redis);
+    $snowflake->setOptions([
+        'redisKey' => 'custom_cache_key_prefix',
+        'redisTtl' => 10,
+    ]);
+
+    $ids[] = $snowflake->id();
+    $ids[] = $snowflake->id();
+    $ids[] = $snowflake->id();
+    $ids[] = $snowflake->id();
+    $ids[] = $snowflake->id();
+    $ids[] = $snowflake->id();
+
+    foreach ($ids as $id) {
+        var_dump($id, json_encode($snowflake->parseId($id)));
+    }
+
+} catch (SnowflakeException $e) {
+    echo $e . "\n";
+    exit;
+}
+
+```
+
+## Snowflake
 > 生成雪花Id示例
 ```php
 <?php
